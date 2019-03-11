@@ -33,7 +33,7 @@ public class UploadController extends BaseController {
 	 *    {"state": "错误信息"}
 	 *
 	 */
-	public void ueditor() {
+	public void index() {
   
 	 
 		String uploadType = getPara("uploadType");
@@ -50,7 +50,7 @@ public class UploadController extends BaseController {
 		UploadFile uploadFile = null;
 		try {
 			// "upfile" 来自 config.json 中的 imageFieldName 配置项
-			uploadFile = getFile("upfile", UploadService.uploadTempPath);
+			uploadFile = getFile("file", UploadService.uploadTempPath,237490830);
 			Ret ret = srv.upload(getLoginAccount(), uploadType, uploadFile);
 			// renderJson(ret);
 			render(new JsonRender(ret).forIE());	// 防止 IE 下出现文件下载现象
@@ -60,7 +60,7 @@ public class UploadController extends BaseController {
 				uploadFile.getFile().delete();
 			}
 			
-			renderJson("state", "上传图片出现未知异常，请告知管理员：" + e.getMessage());
+			renderJson("state", "上传出现未知异常，请告知管理员：" + e.getMessage());
 			LogKit.error(e.getMessage(), e);
 		}
 	}

@@ -49,6 +49,14 @@ public abstract class BaseVideo<M extends BaseVideo<M>> extends Model<M> impleme
 		return getStr("size");
 	}
 
+	public void setPreview(java.lang.String preview) {
+		set("preview", preview);
+	}
+	
+	public java.lang.String getPreview() {
+		return getStr("preview");
+	}
+
 	public void setCreateDate(java.util.Date createDate) {
 		set("createDate", createDate);
 	}

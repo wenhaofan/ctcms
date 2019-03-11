@@ -2,17 +2,21 @@
 
 package live.autu.ctcms.common.upload;
 
+import java.io.File;
+import java.util.Date;
+
+import org.joda.time.LocalDateTime;
+
 import com.jfinal.kit.PathKit;
+import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.upload.UploadFile;
 
 import live.autu.ctcms.common.kit.ImageKit;
+import live.autu.ctcms.common.kit.VideoFrameUtil;
 import live.autu.ctcms.common.model.Account;
-
-import com.jfinal.kit.Ret;
-
-import org.joda.time.LocalDateTime;
-import java.io.File;
+import live.autu.ctcms.common.model.Video;
 
 /**
  * 上传业务
@@ -63,9 +67,26 @@ public class UploadService {
 		// 更新 upload_counter 表的 counter 字段值
 		updateUploadCounter(uploadType);
 
+	 
+		Ret videoFrameResult=VideoFrameUtil.getVideoFirstFrame(absolutePathFileName[0], fileName[0]+".png");
  
-		return Ret.create("state", "SUCCESS")
-				.set("url", relativePathFileName[0])
+		if(StrKit.isBlank(videoFrameResult.getStr("relativeFilePath"))) {
+			return Ret.fail("msg", "截图保存失败！");
+		}
+		
+		Video video=new Video();
+		video.setCreateDate(new Date());
+		video.setDescr(fileName[0]);
+		video.setFileName(fileName[0]);
+		video.setFileType(extName);
+		video.setDownloadCount(0);
+		video.setIsShow(1);
+		video.setPath(relativePathFileName[0]);
+		video.setSize(fileSize);
+		video.setPreview(videoFrameResult.getStr("relativeFilePath"));
+		video.save();
+		
+		return Ret.ok("url", relativePathFileName[0])
 				.set("title", fileName[0])
 				.set("original", uf.getOriginalFileName())
 				.set("type", extName)

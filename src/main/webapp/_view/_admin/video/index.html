@@ -51,8 +51,8 @@
  			
  			<blockquote class="layui-elem-quote" style="margin-top:10px;">视频播放</blockquote>
  			<div id="video-block">
- 				 <h3 id="video-title">第一个视频的标题</h3>
- 				<video id="video"  src="/141.mp4" controls="controls">
+ 				 <h3 id="video-title"></h3>
+ 				<video id="video"  src=" " controls="controls">
 					your browser does not support the video tag
 				</video>
  			</div>
@@ -76,9 +76,10 @@
 			
 			  var uploadInst = upload.render({
 				    elem: '#videoUpload' //绑定元素
-				    ,url: '/upload/' //上传接口
+				    ,url: '/api/upload?uploadType=video' //上传接口
+				    ,accept:'video'
 				    ,done: function(res){
-				     	
+				     	alert("上传成功！");
 				    }
 				    ,error: function(){
 				      //请求异常回调
@@ -120,11 +121,27 @@
 				}
 			})	
 		}
+		
+		function playVideo(videoSrc){
+			 document.getElementById("video").src=videoSrc ;
+			 document.getElementById("video").play();
+			 $("#video-block").css("display","block");
+		}
+		
+		$(function(){
+			
+			$("body").on("click",".video-item",function(){
+				var path=$(this).data("path");
+				playVideo(path);
+				$("#video-title").text($(this).data("filename"));
+			})
+			
+		})
 	</script>
 	<script type="text/html" id="tpl-video">
 #[[
 	{{# for(var p in d.videos){ }}
-		<div class="video-item">
+		<div class="video-item" data-path="{{d.videos[p].path}}" data-filename="{{d.videos[p].fileName}}">
  			<img class="video-img" src="{{ d.videos[p].preview }}">
  			<div class="video-info">
  				<h4 class="video-name"><span>{{ d.videos[p].fileName }}</span></h4>
@@ -168,6 +185,7 @@
     		width: 70%;
     		border: 1px solid #ddd;
     		margin-top: 10px;
+    		display: none;
 		}
 		#video{
 			     height: 100%;
@@ -183,5 +201,8 @@
     #videoPage{
         text-align: center;
     }
+    .video-name span{
+    
+        word-break: break-all;}
 	</style>
 	#end

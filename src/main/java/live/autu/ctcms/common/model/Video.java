@@ -10,4 +10,8 @@ import live.autu.ctcms.common.model.base.BaseVideo;
 @SuppressWarnings("serial")
 public class Video extends BaseVideo<Video> {
 	
+	public String getFullName() {
+		return getPath()+getFileName();
+	}
+	
 }

@@ -4,6 +4,7 @@ package live.autu.ctcms.common;
 
 import com.jfinal.config.Routes;
 
+import live.autu.ctcms.common.upload.UploadController;
 import live.autu.ctcms.index.IndexController;
 import live.autu.ctcms.login.LoginController;
 
@@ -18,7 +19,8 @@ public class FrontRoutes extends Routes {
 		add("/", IndexController.class, "/index");
  
 		add("/login", LoginController.class);
-	 
+		
+		add("/api/upload", UploadController.class);
   
 	}
 }

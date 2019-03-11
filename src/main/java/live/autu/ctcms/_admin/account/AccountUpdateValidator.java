@@ -4,8 +4,6 @@ package live.autu.ctcms._admin.account;
 import com.jfinal.core.Controller;
 import com.jfinal.validate.Validator;
 
-import live.autu.ctcms.common.kit.SensitiveWordsKit;
-
 /**
  * AccountUpdateValidator 验证账号修改功能表单
  */
