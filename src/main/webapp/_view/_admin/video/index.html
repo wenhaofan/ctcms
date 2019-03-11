@@ -1,0 +1,187 @@
+#@adminLayout() #define main()
+<div class="jfa-header-box" id="jfa-header-box">
+	<div class="jfa-crumbs" id="jfa-crumbs">视频管理</div>
+	<div class="jfa-search-box"></div>
+	#include("/_view/_admin/common/_header_right.html")
+</div>
+
+### 内容区域
+<div class="jfa-content-box" id="jfa-content-box">
+	<div class="jfa-content" id="jfa-content">
+
+		<div>
+			<div class="layui-form-item layui-form " style="margin-top: 15px;">
+
+				<div class="layui-inline">
+					<label class="layui-form-label">范围</label>
+					<div class="layui-input-inline" style="width: 140px;">
+						<input type="text" id="startTime" class="layui-inline layui-input"
+							name="startTime" required lay-verify="required"
+							placeholder="请选择起始时间" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-form-mid">-</div>
+					<div class="layui-input-inline" style="width: 140px;">
+						<input type="" text"" id="endTime"
+							class="layui-inline layui-input" name="endTime" required
+							lay-verify="required" placeholder="请选择结束时间" autocomplete="off"
+							class="layui-input">
+					</div>
+				</div>
+
+				<div class="layui-inline">
+
+					<div class="layui-input-inline" style="width: 200px;">
+						<button class="layui-btn" lay-submit lay-filter="formDemo">查询</button>
+						<button type="button" class="layui-btn" id="videoUpload">
+  <i class="layui-icon">&#xe67c;</i>上传视频
+</button>
+					</div>
+				</div>
+
+			</div>
+			<blockquote class="layui-elem-quote">视频列表</blockquote>
+			<div id="video-container">
+			<div id="video-list">
+ 			</div>
+ 			<div>
+ 				<div id="videoPage"></div>
+ 			</div>
+			</div>
+ 			
+ 			
+ 			<blockquote class="layui-elem-quote" style="margin-top:10px;">视频播放</blockquote>
+ 			<div id="video-block">
+ 				 <h3 id="video-title">第一个视频的标题</h3>
+ 				<video id="video"  src="/141.mp4" controls="controls">
+					your browser does not support the video tag
+				</video>
+ 			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		layui.use([ 'laydate', 'form','laypage','laytpl','upload' ], function() {
+			laydate = layui.laydate;
+			laytpl = layui.laytpl;
+			laydate.render({
+				elem : '#startTime' //指定元素
+			});
+			laydate.render({
+				elem : '#endTime' //指定元素
+			});
+			
+			laypage=layui.laypage;
+			upload=layui.upload;
+			
+			
+			  var uploadInst = upload.render({
+				    elem: '#videoUpload' //绑定元素
+				    ,url: '/upload/' //上传接口
+				    ,done: function(res){
+				     	
+				    }
+				    ,error: function(){
+				      //请求异常回调
+				    }
+				  });
+			renderVideoPage({"pageNum":1,"pageSize":20})
+		})
+		
+		function renderVideoList(videos){
+			  laytpl($("#tpl-video").html()).render({
+				    "videos": videos
+				  }, function(string){
+					  $("#video-list").html(string);
+				     
+				});
+		}
+		function renderVideoPage(page){
+			
+			$.ajax({
+				url:"/admin/api/video/list",
+				data:{
+					"pageNum":page.pageNum,
+					"pageSize":page.pageSize,
+				},success:function(data){
+					
+					 renderVideoList(data.list);
+					
+					 laypage.render({
+						 	limit:page.pageSize
+						    ,elem: 'videoPage' //注意，这里的 test1 是 ID，不用加 # 号
+						    ,count: page.totalRow //数据总数，从服务端得到
+						    ,jump: function(obj, first){
+							    //首次不执行
+							    if(!first){
+							    	renderVideoPage({"pageNum":obj.curr,"pageSize":obj.limit})
+							    }
+							}
+					});
+				}
+			})	
+		}
+	</script>
+	<script type="text/html" id="tpl-video">
+#[[
+	{{# for(var p in d.videos){ }}
+		<div class="video-item">
+ 			<img class="video-img" src="{{ d.videos[p].preview }}">
+ 			<div class="video-info">
+ 				<h4 class="video-name"><span>{{ d.videos[p].fileName }}</span></h4>
+ 			</div>
+ 		</div>
+{{# } }}	]]#  
+	</script>
+	<style>
+	#video-container{
+		padding:10px;
+	    border: 1px solid #ddd;
+	}
+		.video-item{
+		width: 110px;
+   
+    display: inline-block;
+    padding: 8px;
+    border: 1px solid #ddd;
+   
+    margin: 0 5px;
+    font-size:12px;
+        cursor: pointer;
+		}
+		.video-img{
+			    width: 90px;
+    height: 60px;
+			magin:0 auto;
+		}
+		.video-info{
+		margin-top:4px;
+		}
+		.video-name{
+			display: inline-block;
+			
+			width: 100%;
+		   	 overflow: hidden;
+		   	 height: 26px
+		}
+		#video-block{
+		    height: 500px;
+    		width: 70%;
+    		border: 1px solid #ddd;
+    		margin-top: 10px;
+		}
+		#video{
+			     height: 100%;
+		    width: 100%;
+		    margin-top: 20px;
+		    padding: 10px;
+		    
+		}
+		#video-title{
+		margin-top: 20px;
+    text-align: center;}
+    
+    #videoPage{
+        text-align: center;
+    }
+	</style>
+	#end
