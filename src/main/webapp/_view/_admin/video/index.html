@@ -10,19 +10,18 @@
 	<div class="jfa-content" id="jfa-content">
 
 		<div>
-			<div class="layui-form-item layui-form " style="margin-top: 15px;">
-
+			<form class="layui-form-item layui-form layui-inline" style="margin-top: 15px;">
 				<div class="layui-inline">
 					<label class="layui-form-label">范围</label>
 					<div class="layui-input-inline" style="width: 140px;">
 						<input type="text" id="startTime" class="layui-inline layui-input"
-							name="startTime" required lay-verify="required"
+							name="start" required lay-verify="required"
 							placeholder="请选择起始时间" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-form-mid">-</div>
 					<div class="layui-input-inline" style="width: 140px;">
 						<input type="" text"" id="endTime"
-							class="layui-inline layui-input" name="endTime" required
+							class="layui-inline layui-input" name="end" required
 							lay-verify="required" placeholder="请选择结束时间" autocomplete="off"
 							class="layui-input">
 					</div>
@@ -30,14 +29,17 @@
 
 				<div class="layui-inline">
 
-					<div class="layui-input-inline" style="width: 200px;">
-						<button class="layui-btn" lay-submit lay-filter="formDemo">查询</button>
-						<button type="button" class="layui-btn" id="videoUpload">
-  <i class="layui-icon">&#xe67c;</i>上传视频
-</button>
+					<div class="layui-input-inline" style="width: 60px;">
+						<button class="layui-btn" lay-submit lay-filter="queryVideo">查询</button>
+						 
 					</div>
 				</div>
 
+			</form>
+			<div class="layui-inline">
+				<button type="button" class="layui-btn" id="videoUpload">
+  							<i class="layui-icon">&#xe67c;</i>上传视频
+						</button>
 			</div>
 			<blockquote class="layui-elem-quote">视频列表</blockquote>
 			<div id="video-container">
@@ -63,23 +65,42 @@
 		layui.use([ 'laydate', 'form','laypage','laytpl','upload' ], function() {
 			laydate = layui.laydate;
 			laytpl = layui.laytpl;
+			form = layui.form;
+			
+			form.on('submit(queryVideo)', function(data){
+				data.field.pageNum=1;
+				data.field.pageSize=20;
+			 
+				$.ajax({
+					url:"/admin/api/video/list",
+					type:"psot",
+					data:data.field,
+					success:function(data){
+						renderVideoList(data.list);
+					}
+				})
+				return false;
+			});
+			
 			laydate.render({
 				elem : '#startTime' //指定元素
+				,type:'datetime'
 			});
 			laydate.render({
 				elem : '#endTime' //指定元素
+				,type:'datetime'
 			});
 			
 			laypage=layui.laypage;
 			upload=layui.upload;
 			
-			
-			  var uploadInst = upload.render({
+			var uploadInst = upload.render({
 				    elem: '#videoUpload' //绑定元素
 				    ,url: '/api/upload?uploadType=video' //上传接口
 				    ,accept:'video'
 				    ,done: function(res){
 				     	alert("上传成功！");
+				     	window.location.reload();
 				    }
 				    ,error: function(){
 				      //请求异常回调
@@ -89,11 +110,11 @@
 		})
 		
 		function renderVideoList(videos){
+			$("#video-list").html("");
 			  laytpl($("#tpl-video").html()).render({
 				    "videos": videos
 				  }, function(string){
 					  $("#video-list").html(string);
-				     
 				});
 		}
 		function renderVideoPage(page){
@@ -136,20 +157,47 @@
 				$("#video-title").text($(this).data("filename"));
 			})
 			
+			$("body").on("click",".download-video",function(){
+				
+				var id=$(this).data("id");
+				
+				window.open("/admin/api/download?videoId="+id);
+				var count=parseInt($(this).prev().text());
+				$(this).prev().text(++count);
+				
+				layer.msg('正在下载中,请稍后！');
+				
+				return false;
+			})
 		})
 	</script>
 	<script type="text/html" id="tpl-video">
 #[[
 	{{# for(var p in d.videos){ }}
-		<div class="video-item" data-path="{{d.videos[p].path}}" data-filename="{{d.videos[p].fileName}}">
+		<div class="video-item" data-path="{{d.videos[p].path}}{{d.videos[p].fileName}}" data-filename="{{d.videos[p].fileName}}">
  			<img class="video-img" src="{{ d.videos[p].preview }}">
  			<div class="video-info">
  				<h4 class="video-name"><span>{{ d.videos[p].fileName }}</span></h4>
+				<div class="download-info">
+					<span title="下载量">{{d.videos[p].downloadCount}}次</span>
+					<button class="layui-btn download-video" data-id="{{d.videos[p].id}}">下载</button>
+				</div>
  			</div>
  		</div>
 {{# } }}	]]#  
 	</script>
 	<style>
+	.download-info{
+		border-top: 1px solid #ddd;
+		padding-top:4px;
+	}
+	.download-video{
+	    height: 18px;
+	    padding: 0 1px;
+	    line-height: inherit;
+	    font-size: 12px;
+	    float: right;
+	}
 	#video-container{
 		padding:10px;
 	    border: 1px solid #ddd;
@@ -204,5 +252,9 @@
     .video-name span{
     
         word-break: break-all;}
+        
+        #videoUpload{
+            margin-bottom: 5px;
+        }
 	</style>
 	#end

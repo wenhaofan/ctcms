@@ -7,4 +7,6 @@
 #namespace("admin.auth")
 #include("admin_auth.sql")
 #end
-
+#namespace("admin.video")
+#include("video.sql")
+#end

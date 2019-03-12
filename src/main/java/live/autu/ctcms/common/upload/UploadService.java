@@ -73,7 +73,7 @@ public class UploadService {
 		if(StrKit.isBlank(videoFrameResult.getStr("relativeFilePath"))) {
 			return Ret.fail("msg", "截图保存失败！");
 		}
-		
+		String url=relativePathFileName[0].replace(fileName[0], "");
 		Video video=new Video();
 		video.setCreateDate(new Date());
 		video.setDescr(fileName[0]);
@@ -81,12 +81,12 @@ public class UploadService {
 		video.setFileType(extName);
 		video.setDownloadCount(0);
 		video.setIsShow(1);
-		video.setPath(relativePathFileName[0]);
+		video.setPath(url);
 		video.setSize(fileSize);
 		video.setPreview(videoFrameResult.getStr("relativeFilePath"));
 		video.save();
 		
-		return Ret.ok("url", relativePathFileName[0])
+		return Ret.ok("url",relativePathFileName[0])
 				.set("title", fileName[0])
 				.set("original", uf.getOriginalFileName())
 				.set("type", extName)

@@ -41,6 +41,7 @@ public class AdminDownloadService {
 			try {
 				processDownloadCount(loginAccount, download, ip);
 			} catch (Exception e) {
+				e.printStackTrace();
 				LogKit.error(e.getMessage(), e);
 			}
 			return Ret.ok("fullFileName", download.getPath() + download.getFileName());
@@ -53,13 +54,11 @@ public class AdminDownloadService {
 	 * 每个 ip 每天对于每个文件只统计一次下载量
 	 */
 	private void processDownloadCount(Account loginAccount, Video download, String ip) {
-		String sql = "select ip from download_log where ip=? and downloadDate = ? and fileName = ? limit 1";
-		String todayDate = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		if (Db.query(sql, ip, todayDate, download.getFileName()).size() == 0) {
-			Db.update("update download set downloadCount = downloadCount + 1 where id = ?", download.getId());
-			Record downloadLog = new Record().set("ip", ip).set("fileName", download.getFileName()).set("downloadDate", new Date());
-			downloadLog.set("accountId", loginAccount.getId());
-			Db.save("download_log", downloadLog);
-		}
+	 
+		Db.update("update video set downloadCount = downloadCount + 1 where id = ?", download.getId());
+		Record downloadLog = new Record().set("ip", ip).set("fileName", download.getFileName()).set("downloadDate", new Date());
+		downloadLog.set("accountId", loginAccount.getId());
+		Db.save("download_log", downloadLog);
+		 
 	}
 }

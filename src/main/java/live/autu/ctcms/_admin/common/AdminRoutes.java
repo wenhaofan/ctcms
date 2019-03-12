@@ -35,7 +35,7 @@ public class AdminRoutes extends Routes {
 		add("/admin/role", RoleAdminController.class, "/role");
 		add("/admin/permission", PermissionAdminController.class, "/permission");
 		add("/admin/video", AdminVideoController.class, "/video");
-		add("/admin/download", AdminDownloadController.class);
+		add("/admin/api/download", AdminDownloadController.class);
 		add("/admin/api/video", AdminVideoApi.class);
 	}
 }

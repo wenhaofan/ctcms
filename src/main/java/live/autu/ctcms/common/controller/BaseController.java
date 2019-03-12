@@ -2,8 +2,11 @@
 
 package live.autu.ctcms.common.controller;
 
+import java.util.Date;
+
 import com.jfinal.core.Controller;
 import com.jfinal.core.NotAction;
+import com.jfinal.kit.StrKit;
 
 import live.autu.ctcms.common.model.Account;
 import live.autu.ctcms.login.LoginService;
@@ -79,6 +82,21 @@ public class BaseController extends Controller {
 	@NotAction
 	public boolean isAjaxRequest() {
 		return "XMLHttpRequest".equalsIgnoreCase(getHeader("X-Requested-With"));
+	}
+	
+	@NotAction
+	public Date toDate(String value, Date defaultValue) {
+		try {
+			if (StrKit.isBlank(value))
+				return defaultValue;
+			return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value.trim());
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public Date getDate(String val) {
+		return toDate(getRequest().getParameter(val), null);
 	}
 }
 
