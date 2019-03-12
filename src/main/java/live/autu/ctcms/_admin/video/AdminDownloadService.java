@@ -35,8 +35,8 @@ public class AdminDownloadService {
 		CacheKit.remove("download", "downloadList");
 	}
 
-	public Ret download(Account loginAccount, String fileName, String ip) {
-		Video download = dao.findFirst("select * from download where fileName = ?", fileName);
+	public Ret download(Account loginAccount, Integer id, String ip) {
+		Video download = dao.findById(id);
 		if (download != null) {
 			try {
 				processDownloadCount(loginAccount, download, ip);
@@ -45,7 +45,7 @@ public class AdminDownloadService {
 			}
 			return Ret.ok("fullFileName", download.getPath() + download.getFileName());
 		} else {
-			return Ret.fail("msg", "文件未找到：" + fileName);
+			return Ret.fail("msg", "文件未找到：" + id);
 		}
 	}
 

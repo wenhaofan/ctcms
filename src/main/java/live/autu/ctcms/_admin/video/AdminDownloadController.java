@@ -25,7 +25,13 @@ public class AdminDownloadController extends BaseController {
 	public void index() {
 		Account loginAccount = getLoginAccount();
 		String ip = IpKit.getRealIp(getRequest());
-		Ret ret = srv.download(loginAccount, getPara("file"), ip);
+		
+		if(getParaToInt("videoId")==null) {
+			renderError(404);
+			return;
+		}
+		
+		Ret ret = srv.download(loginAccount, getParaToInt("videoId"), ip);
 		if (ret.isOk()) {
 			String fullFileName = ret.getAs("fullFileName");
 			renderFile(fullFileName);
