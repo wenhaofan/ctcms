@@ -12,13 +12,18 @@
 ### 内容区域
 <div class="jfa-content-box" id="jfa-content-box">
 	<div class="jfa-content" id="jfa-content">
-
 		<div class="jfa-toolbar">
 			<a class="btn btn-primary btn-sm" href="/admin/account/showAdminList">
 				<i class="fa fa-user"></i>
 				&nbsp;查看后台账户
 			</a>
+			
+			<a class="btn btn-primary btn-sm"  href="javascript:void(0)" onclick="javascript:window.location.href='/admin/account/add'">
+				<i class="fa fa-user"></i>
+				&nbsp;添加用户
+			</a>
 		</div>
+	 
 
 		<div class="jfa-table-box margin-top-30">
 			<table class="table table-bordered table-hover margin-bottom-10">
@@ -54,11 +59,7 @@
 						<a href="/admin/account/edit?id=#(x.id)&p=#(accountPage.pageNumber)">
 							<i class="fa fa-pencil" title="修改"></i>
 						</a>
-
-						<a href="/user/#(x.id)" target="_blank">
-							<i class="fa fa-eye" title="查看"></i>
-						</a>
-
+ 
 						<a data-pjax href="/admin/account/assignRoles?id=#(x.id)">
 							<i class="fa fa-user" title="分配角色"></i>
 						</a>

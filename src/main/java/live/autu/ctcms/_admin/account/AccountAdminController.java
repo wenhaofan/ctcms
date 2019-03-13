@@ -45,6 +45,13 @@ public class AccountAdminController extends BaseController {
 		render("edit.html");
 	}
 
+	public void add(){
+		Account account = new Account();
+		setAttr("account", account);
+		account.setAvatar("/x.jpg");
+		render("edit.html");
+	}
+	
 	/**
 	 * 提交修改
 	 */

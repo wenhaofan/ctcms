@@ -2,7 +2,12 @@
 
 package live.autu.ctcms._admin.account;
 
+import java.util.Date;
+import java.util.List;
+
+import com.jfinal.kit.HashKit;
 import com.jfinal.kit.Ret;
+import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
@@ -11,8 +16,6 @@ import live.autu.ctcms.common.model.Account;
 import live.autu.ctcms.common.model.Role;
 import live.autu.ctcms.common.model.Session;
 import live.autu.ctcms.login.LoginService;
-
-import java.util.List;
 
 /**
  * 账户管理
@@ -46,7 +49,24 @@ public class AccountAdminService {
 		if (id != null) {
 			return Ret.fail("msg", "邮箱已经存在，请输入别的昵称");
 		}
-
+		String password=account.getPassword();
+		if(StrKit.notBlank(password)){
+			// 密码加盐 hash
+			String salt = HashKit.generateSaltForSha256();
+			password = HashKit.sha256(salt + password);
+			account.setPassword(password);
+			account.setSalt(salt);
+		}else {
+			account.remove("password");
+		}
+		
+		if(account.getId()==null) {
+			account.setStatus(Account.STATUS_OK);
+			account.setCreateAt(new Date());
+			account.save();
+			return Ret.ok("msg", "账号添加成功！");
+		}
+		
 		// 暂时只允许修改 nickName 与 userName
 		account.keep("id", "nickName", "userName");
 		account.update();
