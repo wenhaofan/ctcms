@@ -7,7 +7,7 @@ import com.jfinal.plugin.activerecord.dialect.MysqlDialect;
 import com.jfinal.plugin.activerecord.generator.Generator;
 import com.jfinal.plugin.druid.DruidPlugin;
 
-import live.autu.ctcms.common.CtCMSConfig;
+import live.autu.ctcms.common.CTCMSConfig;
 
 import javax.sql.DataSource;
 
@@ -38,7 +38,7 @@ public class _Generator {
 	 * 重用 JFinalClubConfig 中的数据源配置，避免冗余配置
 	 */
 	public static DataSource getDataSource() {
-		DruidPlugin druidPlugin = CtCMSConfig.getDruidPlugin();
+		DruidPlugin druidPlugin = CTCMSConfig.getDruidPlugin();
 		druidPlugin.start();
 		return druidPlugin.getDataSource();
 	}

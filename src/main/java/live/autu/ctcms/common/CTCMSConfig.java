@@ -34,9 +34,9 @@ import live.autu.ctcms.login.LoginService;
 /**
  * JFinalClubConfig
  */
-public class CtCMSConfig extends JFinalConfig {
+public class CTCMSConfig extends JFinalConfig {
 
-	private static Prop p;
+	public static Prop p;
 
 	private WallFilter wallFilter;
 

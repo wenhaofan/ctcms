@@ -50,8 +50,7 @@ public class UploadService {
 	 *  上传业务方法
 	 */
 	public Ret upload(Account account, String uploadType, UploadFile uf) {
-		 
-
+ 
 		String fileSize = uf.getFile().length() + "";
 		String extName = "." + ImageKit.getExtName(uf.getFileName());
 

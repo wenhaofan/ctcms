@@ -8,6 +8,7 @@ import com.jfinal.core.Controller;
 import com.jfinal.core.NotAction;
 import com.jfinal.kit.StrKit;
 
+import live.autu.ctcms.common.CTCMSConfig;
 import live.autu.ctcms.common.model.Account;
 import live.autu.ctcms.login.LoginService;
 
@@ -47,8 +48,20 @@ public class BaseController extends Controller {
 	public Account getLoginAccount() {
 		if (loginAccount == null) {
 			loginAccount = getAttr(LoginService.loginAccountCacheName);
+			
+			String secretKey=getPara(LoginService.SECRET_KEY);
+			
+			//判断是否是系统管理员的秘钥
+			if(StrKit.equals(CTCMSConfig.p.get(LoginService.SECRET_KEY), secretKey)) {
+				//如果是 则当前登录用户设置为系统管理员
+				loginAccount=new Account().findById(1);
+				 
+			}
+			
 			if (loginAccount != null && ! loginAccount.isStatusOk()) {
 				throw new IllegalStateException("当前用户状态不允许登录，status = " + loginAccount.getStatus());
+			}else {
+				set(LoginService.loginAccountCacheName, loginAccount);
 			}
 		}
 		return loginAccount;

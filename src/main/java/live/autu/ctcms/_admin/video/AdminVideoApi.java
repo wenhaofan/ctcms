@@ -25,7 +25,7 @@ public class AdminVideoApi extends BaseController {
 		query.setEnd(end);
 		query.setStart(start);
 		
-		renderJson(adminVideoService.page(getParaToInt("pageNum",1), getParaToInt("pageSize",20),query));
+		renderJson(adminVideoService.page(getParaToInt("pageNumber",1), getParaToInt("pageSize",20),query));
 	}
 	
 	public void get() {

@@ -22,7 +22,10 @@ public class LoginService {
 	public static final LoginService me = new LoginService();
 
 	private Account accountDao = new Account().dao();
-
+	
+	//秘钥key
+	public static final String SECRET_KEY="secretkey";
+	
 	// 存放登录用户的 cacheName
 	public static final String loginAccountCacheName = "loginAccount";
 

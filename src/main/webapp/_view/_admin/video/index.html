@@ -68,7 +68,7 @@
 			form = layui.form;
 			
 			form.on('submit(queryVideo)', function(data){
-				data.field.pageNum=1;
+				data.field.pageNumber=1;
 				data.field.pageSize=20;
 			 
 				$.ajax({
@@ -106,7 +106,7 @@
 				      //请求异常回调
 				    }
 				  });
-			renderVideoPage({"pageNum":1,"pageSize":20})
+			renderVideoPage({"pageNumber":1,"pageSize":1})
 		})
 		
 		function renderVideoList(videos){
@@ -122,20 +122,21 @@
 			$.ajax({
 				url:"/admin/api/video/list",
 				data:{
-					"pageNum":page.pageNum,
+					"pageNumber":page.pageNumber,
 					"pageSize":page.pageSize,
 				},success:function(data){
-					
+					 page=data;
 					 renderVideoList(data.list);
-					
+					 console.log(1);
 					 laypage.render({
-						 	limit:page.pageSize
+						 	curr:page.pageNumber
+						 	,limit:page.pageSize
 						    ,elem: 'videoPage' //注意，这里的 test1 是 ID，不用加 # 号
 						    ,count: page.totalRow //数据总数，从服务端得到
 						    ,jump: function(obj, first){
 							    //首次不执行
 							    if(!first){
-							    	renderVideoPage({"pageNum":obj.curr,"pageSize":obj.limit})
+							    	renderVideoPage({"pageNumber":obj.curr,"pageSize":obj.limit})
 							    }
 							}
 					});
