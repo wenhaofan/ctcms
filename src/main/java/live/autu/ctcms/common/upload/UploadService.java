@@ -105,7 +105,7 @@ public class UploadService {
 	 */
 	private String generateFileName(Date createDate,Integer accountId, String extName) {
 		LocalDateTime dt = LocalDateTime.fromDateFields(createDate);
-		return accountId + "_" + dt.toString("yyyy年MM月dd日HH时mm分ss秒") + extName+Math.random()*1000;
+		return accountId + "_" + dt.toString("yyyy年MM月dd日HH时mm分ss秒") + (int)(Math.random()*1000) + extName;
 	}
 
 	/**

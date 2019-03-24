@@ -12,4 +12,6 @@
 				unix_timestamp(createDate) <= #(query.end.getTime()/1000)
 		#end
 	#end
+	
+	order by createDate desc
 #end

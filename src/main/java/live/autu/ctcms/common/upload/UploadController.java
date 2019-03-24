@@ -13,27 +13,12 @@ import com.jfinal.upload.UploadFile;
 import live.autu.ctcms.common.controller.BaseController;
 
 /**
- * UploadController 上传控制器，接管 ueditor 上传功能
+ * UploadController 上传控制器 
  */
 public class UploadController extends BaseController {
 
 	UploadService srv = UploadService.me;
 
-	/**
-	 * 1：测试上传图片成功所返回的 json 数据格式如下：
-	 *  {
-	 *     "state": "SUCCESS",
-	 *     "title": "1461249851191086496.png",
-	 *     "original": "qr.png",
-	 *     "type": ".png",
-	 *     "url": "/ueditor/jsp/upload/image/20160421/1461249851191086496.png",
-	 *     "size": "58640"
-	 *  }
-	 *
-	 * 2：如果上传出现错误，直接响应如下的 json 即可：
-	 *    {"state": "错误信息"}
-	 *
-	 */
 	public void index() {
   
 	 

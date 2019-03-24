@@ -107,7 +107,7 @@ public class BaseController extends Controller {
 			return null;
 		}
 	}
-	
+ 
 	public Date getDate(String val) {
 		return toDate(getRequest().getParameter(val), null);
 	}
