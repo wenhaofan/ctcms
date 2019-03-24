@@ -2,14 +2,15 @@
 
 package live.autu.ctcms.common.upload;
 
+import java.util.Date;
+
 import com.jfinal.kit.LogKit;
+import com.jfinal.kit.Ret;
 import com.jfinal.kit.StrKit;
 import com.jfinal.render.JsonRender;
 import com.jfinal.upload.UploadFile;
 
 import live.autu.ctcms.common.controller.BaseController;
-
-import com.jfinal.kit.Ret;
 
 /**
  * UploadController 上传控制器，接管 ueditor 上传功能
@@ -51,7 +52,10 @@ public class UploadController extends BaseController {
 		try {
 			// "upfile" 来自 config.json 中的 imageFieldName 配置项
 			uploadFile = getFile("file", UploadService.uploadTempPath,237490830);
-			Ret ret = srv.upload(getLoginAccount(), uploadType, uploadFile);
+			
+			Date createDate=getDate("create");
+			
+			Ret ret = srv.upload(getLoginAccount(), uploadType, uploadFile,createDate);
 			// renderJson(ret);
 			render(new JsonRender(ret).forIE());	// 防止 IE 下出现文件下载现象
 		} 

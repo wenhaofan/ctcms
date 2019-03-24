@@ -49,8 +49,12 @@ public class UploadService {
 	/**
 	 *  上传业务方法
 	 */
-	public Ret upload(Account account, String uploadType, UploadFile uf) {
+	public Ret upload(Account account, String uploadType, UploadFile uf,Date createDate) {
  
+		if(createDate==null) {
+			createDate=new Date();
+		}
+		
 		String fileSize = uf.getFile().length() + "";
 		String extName = "." + ImageKit.getExtName(uf.getFileName());
 
@@ -60,21 +64,22 @@ public class UploadService {
 		String[] absolutePathFileName = new String[1];
 		// 生成的文件名
 		String[] fileName = new String[1];
-		buildPathAndFileName(uploadType, account.getId(), extName, relativePathFileName, absolutePathFileName, fileName);
+		buildPathAndFileName(uploadType, account.getId(), extName, relativePathFileName, absolutePathFileName, fileName,createDate);
 		saveOriginalFileToTargetFile(uf.getFile(), absolutePathFileName[0]);
 
 		// 更新 upload_counter 表的 counter 字段值
 		updateUploadCounter(uploadType);
 
 	 
-		Ret videoFrameResult=VideoFrameUtil.getVideoFirstFrame(absolutePathFileName[0], fileName[0]+".png");
+		Ret videoFrameResult=VideoFrameUtil.getVideoFirstFrame(absolutePathFileName[0], fileName[0]+".jpg");
  
 		if(StrKit.isBlank(videoFrameResult.getStr("relativeFilePath"))) {
 			return Ret.fail("msg", "截图保存失败！");
 		}
 		String url=relativePathFileName[0].replace(fileName[0], "");
 		Video video=new Video();
-		video.setCreateDate(new Date());
+		
+		video.setCreateDate(createDate);
 		video.setDescr(fileName[0]);
 		video.setFileName(fileName[0]);
 		video.setFileType(extName);
@@ -98,9 +103,9 @@ public class UploadService {
 	 * 包含 accountId  ，方便清除恶意上传
 	 * 目录中已经包含了模块名了，这里的 meta 只需要体现 accountId 与时间就可以了
 	 */
-	private String generateFileName(Integer accountId, String extName) {
-		LocalDateTime dt = LocalDateTime.now();
-		return accountId + "_" + dt.toString("yyyyMMddHHmmss") + extName;
+	private String generateFileName(Date createDate,Integer accountId, String extName) {
+		LocalDateTime dt = LocalDateTime.fromDateFields(createDate);
+		return accountId + "_" + dt.toString("yyyy年MM月dd日HH时mm分ss秒") + extName+Math.random()*1000;
 	}
 
 	/**
@@ -113,7 +118,7 @@ public class UploadService {
 			String extName,
 			String[] relativePathFileName,
 			String[] absolutePathFileName,
-			String[] fileName) {
+			String[] fileName,Date createDate) {
 
 		Integer counter = Db.queryInt("select counter from upload_counter where uploadType=? limit 1", uploadType);
 		if (counter == null) {
@@ -123,7 +128,7 @@ public class UploadService {
 		String relativePath = "/" + (counter / FILES_PER_SUB_DIR) + "/";    // 生成相对对路径
 		relativePath = basePath + uploadType + relativePath;
 
-		fileName[0] = generateFileName(accountId, extName);
+		fileName[0] = generateFileName(createDate,accountId, extName);
 		relativePathFileName[0] =  relativePath + fileName[0];
 
 		String absolutePath = PathKit.getWebRootPath() + relativePath;   // webRootPath 将来要根据 baseUploadPath 调整，改代码，暂时选先这样用着，着急上线

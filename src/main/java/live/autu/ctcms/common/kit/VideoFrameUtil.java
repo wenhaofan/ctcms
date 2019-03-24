@@ -21,9 +21,9 @@ import com.jfinal.kit.Ret;
 
 public class VideoFrameUtil {
 
-	private static String rootPath = PathKit.getWebRootPath() + "/video/img";// 服务器路径
+	private static String rootPath = PathKit.getWebRootPath() + "/video/img";//图片保存路径
 
-	private static final String IMAGEMAT = "png"; // 图片格式
+	private static final String IMAGEMAT = "jpg"; // 图片格式
 	private static final String ROTATE = "rotate";
 	public static final int MOD = 1;// 第一帧
 
@@ -74,9 +74,16 @@ public class VideoFrameUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//压缩图片
+		try {
+			BufferedImage srcImage = ImageIO.read(new File(targetFilePath));
+			ImageKit.saveWithQuality(srcImage, 0.4f, targetFilePath);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 
-		return Ret.ok("targetFilePath",targetFilePath)
-				.set("relativeFilePath", "/video/img/"+targetImageName); // 返回的是视频第一帧
+		return Ret.ok("absoluteFilePath", targetFilePath).set("relativeFilePath", "/video/img/" + targetImageName); // 返回的是视频第一帧
 	}
 
 	/**
@@ -101,7 +108,7 @@ public class VideoFrameUtil {
 	 * @return：缩略图的存放路径
 	 */
 	private static String getImagePath(String fileName) {
-		return rootPath+"/" + fileName;
+		return rootPath + "/" + fileName;
 	}
 
 	/**
@@ -112,11 +119,11 @@ public class VideoFrameUtil {
 	 * @throws IOException
 	 */
 	public static String doExecuteFrame(Frame f, String lpath) throws IOException {
-		
-		if(!new File(rootPath).exists()) {
+
+		if (!new File(rootPath).exists()) {
 			new File(rootPath).mkdirs();
 		}
-		
+
 		String targerFilePath = getImagePath(lpath);
 		if (null == f || null == f.image) {
 			return null;
